@@ -13,9 +13,9 @@ async def add_answer(
         session: AsyncSession,
         answer_in: AnswerBase
 ):
-    query_id: Result = await session.execute(select(Question).where(Question.id==id))
+    result: Result = await session.execute(select(Question).where(Question.id==id))
 
-    if query_id.scalar_one_or_none():
+    if result.scalar_one_or_none():
 
         answer = Answer(**answer_in.model_dump())
 
@@ -30,6 +30,39 @@ async def add_answer(
     else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='detail not found'
+            detail='question not found'
+        )
+
+async def get_answer(
+        id: int,
+        session: AsyncSession
+):
+    result: Result = await session.execute(select(Answer.text).where(Answer.id==id))
+
+    if (answer := result.scalar_one_or_none()):
+        return answer
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='answer not found'
+        )
+
+
+async def delete_answer(
+        id: int,
+        session: AsyncSession
+):
+    result: Result = await  session.execute(select(Answer).where(Answer.id==id))
+
+    if (answer := result.scalar_one_or_none()):
+
+        await session.delete(answer)
+        await session.commit()
+
+        return {"delete": answer}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='answer not found'
         )
 

@@ -56,3 +56,23 @@ async def get_question_and_answers(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="detail not found"
     )
+
+async def delete_question_and_answers(
+        id: int,
+        session: AsyncSession
+):
+    result: Result = await session.execute(select(Question).where(Question.id==id))
+
+    if (question:= result.scalar_one_or_none()):
+
+        await session.delete(question)
+        await session.commit()
+
+        return {"delete": question}
+    else:
+        HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='detail not found'
+        )
+
+

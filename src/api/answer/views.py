@@ -20,10 +20,16 @@ async def answer_to_question(
 
 
 @api_router.get('/answer/{id}')
-async def get_answer(id: int):
-    ...
+async def get_answer(
+        id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await crud.get_answer(id, session)
 
 
 @api_router.delete('/answer/{id}')
-async def delete_answer(id: int):
-    ...
+async def delete_answer(
+        id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await crud.delete_answer(id, session)

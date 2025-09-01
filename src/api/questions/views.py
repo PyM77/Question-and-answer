@@ -5,6 +5,7 @@ from api.questions.schemas import QuestionBase
 from db.database import get_async_session
 from api.questions import crud
 
+
 api_router = APIRouter(tags=['questions'], prefix='/questions')
 
 
@@ -40,6 +41,9 @@ async def get_question(
 
 
 @api_router.delete('/{id}')
-async def delete_question(id: int):
-    ...
+async def delete_question(
+        id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await crud.delete_question_and_answers(id, session)
 
