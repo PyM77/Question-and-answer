@@ -32,7 +32,11 @@ async def get_question(
         id: int,
         session: AsyncSession = Depends(get_async_session)
 ):
-    ...
+    question_and_answers = await crud.get_question_and_answers(id, session)
+
+    return question_and_answers
+
+
 
 
 @api_router.delete('/{id}')

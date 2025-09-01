@@ -1,16 +1,29 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
-app = APIRouter(tags=['answer'])
+from api.answer import crud
+from api.answer.schemas import AnswerBase
+from db.database import get_async_session
 
-@app.post('/questions/{id}/answers/')
-async def answer_to_question(id: int):
-    ...
+api_router = APIRouter(tags=['answer'])
 
-@app.get('/answer/{id}')
+
+@api_router.post('/questions/{id}/answers/')
+async def answer_to_question(
+        id: int,
+        answer: AnswerBase,
+        session: AsyncSession = Depends(get_async_session)
+):
+    answer_create = await crud.add_answer(id, session, answer)
+
+    return {"answer_create": answer_create}
+
+
+@api_router.get('/answer/{id}')
 async def get_answer(id: int):
     ...
 
-@app.delete('/answer/{id}')
+
+@api_router.delete('/answer/{id}')
 async def delete_answer(id: int):
     ...
-
