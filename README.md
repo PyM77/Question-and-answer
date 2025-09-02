@@ -1,4 +1,3 @@
-````markdown
 # Test Project
 
 ## Описание проекта
