@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "5050:8000"
+    depends_on:
+      - pg
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /app
+        - action: rebuild
+          path: ./poetry.lock
+
+  pg:
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5540:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:

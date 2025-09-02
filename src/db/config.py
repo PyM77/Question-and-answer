@@ -4,8 +4,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.parent
 
-
-
 class Settings(BaseSettings):
     DB_USER: str
     DB_PASSWORD: str
@@ -27,7 +25,4 @@ class Settings(BaseSettings):
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
     )
 
-
-
 settings = Settings()
-
